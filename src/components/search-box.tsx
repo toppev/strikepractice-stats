@@ -17,18 +17,30 @@ export function SearchBox({ size = "md", autoFocus = false }: { size?: "md" | "l
   const [active, setActive] = useState(-1);
   const [open, setOpen] = useState(false);
   const request = useRef(0);
+  // Answers already fetched, so backspacing or retyping a name doesn't ask again
+  const seen = useRef(new Map<string, Suggestion[]>());
 
   useEffect(() => {
     const q = query.trim();
+    // Any answer still on its way is for older text now
+    const id = ++request.current;
     if (!/^[A-Za-z0-9_]{1,16}$/.test(q)) {
       setSuggestions([]);
       return;
     }
-    const id = ++request.current;
+    const known = seen.current.get(q.toLowerCase());
+    if (known) {
+      setSuggestions(known);
+      setActive(-1);
+      return;
+    }
+    // Asks once typing pauses, not on every key: most people type slower than a short delay
     const timer = setTimeout(async () => {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        if (!res.ok) return; // e.g. rate limited: keep what's shown
         const data = (await res.json()) as { players: Suggestion[] };
+        seen.current.set(q.toLowerCase(), data.players);
         if (id === request.current) {
           setSuggestions(data.players);
           setActive(-1);
@@ -36,7 +48,7 @@ export function SearchBox({ size = "md", autoFocus = false }: { size?: "md" | "l
       } catch {
         // Suggestions are a convenience; Enter still works
       }
-    }, 120);
+    }, 300);
     return () => clearTimeout(timer);
   }, [query]);
 

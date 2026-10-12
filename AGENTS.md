@@ -60,6 +60,10 @@ Point at a real database with `DATABASE_URL=mysql://user:pass@host:3306/db` or
 - **Demo data must stay anonymized.** Regenerate it only with `scripts/make-sample-data.ts`, which checks
   for leaks. Never commit a real database or dump.
 - **No Minecraft assets in the repo** (textures, the game's fonts). Load them by URL (config `images.*`).
+- **The container is read-only** (compose `read_only: true`, app files owned by root, no capabilities).
+  Code that writes files must use `/tmp` or a volume you add to `docker-compose.yml`; don't drop the hardening.
+- **URL input is untrusted.** Route `params` arrive already decoded (don't `decodeURIComponent` them
+  again); a repeated query parameter arrives as an array, so read them with `oneParam()`/`pageParam()`.
 - **Next.js 16:** `params`/`searchParams` are Promises; pages are dynamic (the root layout sets
   `dynamic = "force-dynamic"`); check `node_modules/next/dist/docs/` for anything else.
 - **Dependencies: few, pinned exactly.** `.npmrc` only installs releases that are at least 7 days old
@@ -88,6 +92,7 @@ src/lib/db/              Database interface, mysql.ts, sqlite.ts
 src/lib/queries/         all SQL (players, fights, leaderboards, kits, server)
 src/lib/sp/              StrikePractice formats: fight JSON, items, legacy ids, potions, § colors
 src/lib/images.ts        image URL templates, arena banners
+src/proxy.ts             rate limit per visitor (src/lib/rate-limit.ts)
 scripts/                 doctor.ts, make-sample-data.ts
 sample-data/demo.db      anonymized demo database
 branding/                logo and arena images, served at /branding/*

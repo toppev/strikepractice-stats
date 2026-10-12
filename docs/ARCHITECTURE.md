@@ -42,7 +42,8 @@ browser ── GET /player/Steve ──▶ Next.js server component (src/app/pla
 | `src/lib/config.ts` | `config.yml` schema (zod) and loader; re-reads the file when it changes |
 | `src/lib/queries/` | All SQL. `players.ts`, `fights.ts`, `leaderboards.ts`, `kits.ts`, `server.ts` |
 | `src/lib/images.ts` | Head/skin/item/texture URLs from the config templates; arena banners |
-| `src/lib/cache.ts` | In-memory TTL cache with in-flight de-duplication |
+| `src/lib/cache.ts` | In-memory TTL cache with in-flight de-duplication, capped at 2000 entries |
+| `src/proxy.ts`, `src/lib/rate-limit.ts` | Requests per visitor and minute (`rateLimitPerMinute`); 429 past that |
 | `scripts/doctor.ts` | Setup checker (config, connection, tables, indexes, parse rate) |
 | `scripts/make-sample-data.ts` | Builds the anonymized demo database from a real one |
 | `sample-data/demo.db` | The demo database (SQLite, anonymized), used when `DATABASE_URL` is unset |

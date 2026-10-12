@@ -5,6 +5,10 @@ type Entry = { expires: number; value: Promise<unknown> };
 const holder = globalThis as unknown as { __spCache?: Map<string, Entry> };
 const store = (holder.__spCache ??= new Map());
 
+// Keys come from URLs (player names, filters, page numbers), so a crawler or someone requesting
+// endless made-up pages could otherwise grow the cache without limit
+const MAX_ENTRIES = 2000;
+
 /**
  * Remembers a query result for `cacheSeconds` (config.yml), scaled by `weight` for the heavy
  * queries that scan whole tables. Concurrent callers share one in-flight query.
@@ -21,8 +25,9 @@ export function cached<T>(key: string, load: () => Promise<T>, weight = 1): Prom
     throw err;
   });
   if (ttl > 0) {
+    store.delete(key); // re-added at the end, so the Map stays ordered oldest first
     store.set(key, { expires: now + ttl, value });
-    if (store.size > 2000) prune(now);
+    if (store.size > MAX_ENTRIES) prune(now);
   }
   return value;
 }
@@ -35,5 +40,10 @@ export function forget(key: string) {
 function prune(now: number) {
   for (const [key, entry] of store) {
     if (entry.expires <= now) store.delete(key);
+  }
+  // Still full of live entries: drop the oldest tenth
+  for (const key of store.keys()) {
+    if (store.size <= MAX_ENTRIES * 0.9) break;
+    store.delete(key);
   }
 }

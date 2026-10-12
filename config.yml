@@ -65,3 +65,14 @@ startingElo: 1000
 
 # How long database results are reused, in seconds. Raise it for big databases or busy sites.
 cacheSeconds: 60
+
+# Pages one visitor (IP address) may load per minute; search suggestions have their own count of 4x
+# this. Past that they get "Too many requests" until the minute is over, so one aggressive crawler
+# or script can't keep the database busy for everyone. People browsing never get near it. 0 turns
+# it off. Behind more than one proxy, see "Rate limit" in docs/DEPLOYING.md.
+rateLimitPerMinute: 120
+
+# Only if visitors reach the site through Cloudflare (and nothing else can reach it): read their
+# addresses from Cloudflare's CF-Connecting-IP header. Left off, anyone could send that header with
+# a made-up address to get around the rate limit.
+behindCloudflare: false

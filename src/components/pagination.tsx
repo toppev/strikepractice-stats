@@ -29,6 +29,11 @@ export function Pagination({ page, pages, href }: { page: number; pages: number;
 }
 
 export function pageParam(value: string | string[] | undefined): number {
-  const n = Number(Array.isArray(value) ? value[0] : value);
+  const n = Number(oneParam(value));
   return Number.isInteger(n) && n > 0 ? Math.min(n, 10_000) : 1;
+}
+
+/** A repeated query parameter (?kit=a&kit=b) arrives as an array; pages only use the first one */
+export function oneParam(value: string | string[] | undefined): string | undefined {
+  return (Array.isArray(value) ? value[0] : value) || undefined;
 }

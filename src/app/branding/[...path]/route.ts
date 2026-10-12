@@ -31,8 +31,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
       headers: {
         "Content-Type": type,
         "Cache-Control": "public, max-age=3600",
-        // SVGs could carry scripts; never let one run in our origin
-        ...(type === "image/svg+xml" ? { "Content-Security-Policy": "script-src 'none'" } : {}),
+        // SVGs could carry scripts or forms; opened directly, one may only draw itself
+        ...(type === "image/svg+xml" ? { "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox" } : {}),
       },
     });
   } catch {

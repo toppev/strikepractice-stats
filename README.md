@@ -70,6 +70,23 @@ to [how the plugin stores its data](docs/STRIKEPRACTICE-DATA.md), the
 access to your server. Try asking for things like "make it match our brand colors and logo", "add a
 JSON API for our Discord bot", or "add a page per kit".
 
+## External services
+
+With the default settings, visitors' browsers load images from these services, so they see your
+visitors' IP addresses (worth knowing for a privacy policy). Each one is a URL template under
+`images` in [`config.yml`](config.yml); point it at your own copy to self-host.
+
+| Service | Used for | Setting |
+|---|---|---|
+| [mc-heads.net](https://mc-heads.net) | Player heads and skins | `images.head`, `images.body` |
+| [mc.nerothe.com](https://mc.nerothe.com) | Item icons in inventories, kit and leaderboard icons | `images.item` |
+| [mcasset.cloud](https://mcasset.cloud) | Potion bottles (tinted per effect) and fallback item/block textures | `images.texture` |
+
+Nothing else is contacted while the site runs: no analytics, fonts are served by the site itself.
+Building it downloads npm packages, the fonts (Google Fonts, once at build time) and, with Docker,
+the `node` base image. Next.js's anonymous build telemetry is off in the Docker image; elsewhere
+run `npx next telemetry disable`.
+
 ## Development
 
 Node.js 22.13+ (24 recommended).
@@ -87,9 +104,8 @@ No ORM: the queries are plain SQL in `src/lib/queries/`.
 ## Credits
 
 - Data recorded by StrikePractice.
-- Player skins from [mc-heads.net](https://mc-heads.net), item icons from
-  [mc.nerothe.com](https://mc.nerothe.com), game textures from [mcasset.cloud](https://mcasset.cloud),
-  all loaded at runtime and configurable. Minecraft assets belong to Mojang; none are included here.
+- Skins, item icons and textures from the [services above](#external-services), loaded at runtime.
+  Minecraft assets belong to Mojang; none are included here.
 
 Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.
 

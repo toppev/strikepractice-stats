@@ -21,3 +21,12 @@ services:
     extra_hosts:
       # Lets DATABASE_URL use host.docker.internal for a database running on this machine
       - "host.docker.internal:host-gateway"
+    # Hardening the site doesn't notice: it only reads files, runs as an unprivileged user and needs
+    # no Linux capabilities. If a change of yours writes files, give it a volume (or drop read_only).
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true

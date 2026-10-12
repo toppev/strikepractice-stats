@@ -21,35 +21,37 @@ import { getBoards } from "@/lib/queries/leaderboards";
 import { FightList, FightRow, KitLabel } from "@/components/fight-row";
 import { ItemIconFor } from "@/components/minecraft";
 import { PlayerHead, playerHref } from "@/components/player";
-import { Pagination, pageParam } from "@/components/pagination";
+import { Pagination, oneParam, pageParam } from "@/components/pagination";
 import { EloChart, type EloSeries } from "@/components/elo-chart";
 
 type Props = {
+  // Next.js has already decoded these; decoding again would break on a literal "%"
   params: Promise<{ name: string }>;
-  searchParams: Promise<{ page?: string; show?: string; kit?: string }>;
+  searchParams: Promise<{ page?: string | string[]; show?: string | string[]; kit?: string | string[] }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const player = await findPlayer(decodeURIComponent((await params).name));
+  const player = await findPlayer((await params).name);
   return { title: player ? player.name : "Player not found" };
 }
 
 const PAGE_SIZE = 15;
 
 export default async function PlayerPage({ params, searchParams }: Props) {
-  const [{ name: rawName }, query] = await Promise.all([params, searchParams]);
-  const requested = decodeURIComponent(rawName);
+  const [{ name: requested }, search] = await Promise.all([params, searchParams]);
+  const query = { show: oneParam(search.show), kit: oneParam(search.kit), page: oneParam(search.page) };
   const player = await findPlayer(requested);
   if (!player) notFound();
   // One address per player: UUIDs, old names and odd casing all land on the current name
   if (player.name !== requested) {
-    const qs = new URLSearchParams(query as Record<string, string>).toString();
+    const kept = Object.entries(query).filter((entry): entry is [string, string] => !!entry[1]);
+    const qs = new URLSearchParams(kept).toString();
     redirect(`${playerHref(player)}${qs ? `?${qs}` : ""}`);
   }
 
   const filter: FightFilter = {
     ranked: query.show === "ranked" ? true : query.show === "unranked" ? false : undefined,
-    kit: query.kit || undefined,
+    kit: query.kit,
   };
   const page = pageParam(query.page);
 

@@ -3,18 +3,19 @@ import Link from "next/link";
 import { recentFights } from "@/lib/queries/fights";
 import { getKits } from "@/lib/queries/kits";
 import { FightList, FightRow, KitLabel } from "@/components/fight-row";
-import { pageParam } from "@/components/pagination";
+import { oneParam, pageParam } from "@/components/pagination";
 
 export const metadata: Metadata = { title: "Fights" };
 
 const PAGE_SIZE = 30;
 
-type Props = { searchParams: Promise<{ page?: string; show?: string; kit?: string }> };
+type Props = { searchParams: Promise<{ page?: string | string[]; show?: string | string[]; kit?: string | string[] }> };
 
 export default async function FightsPage({ searchParams }: Props) {
-  const query = await searchParams;
-  const page = pageParam(query.page);
-  const filter = { ranked: query.show === "ranked" ? true : query.show === "unranked" ? false : undefined, kit: query.kit || undefined };
+  const params = await searchParams;
+  const query = { show: oneParam(params.show), kit: oneParam(params.kit) };
+  const page = pageParam(params.page);
+  const filter = { ranked: query.show === "ranked" ? true : query.show === "unranked" ? false : undefined, kit: query.kit };
   // One extra row tells whether there is a next page without counting the whole table
   const [rows, kits] = await Promise.all([recentFights(filter, PAGE_SIZE + 1, (page - 1) * PAGE_SIZE), getKits()]);
   const fights = rows.slice(0, PAGE_SIZE);

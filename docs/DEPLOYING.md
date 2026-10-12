@@ -147,6 +147,28 @@ match-link: '&9Match link: https://stats.example.net/fight/<started>'
 The plugin sends the link a moment before it saves the fight, so a click within the first seconds
 can show "Fight not found"; a refresh then finds it.
 
+### Rate limit
+
+Each visitor (IP address) may load `rateLimitPerMinute` pages a minute (config.yml, default 120),
+and the search box gets 4 times that on a count of its own, so looking up many players doesn't
+use up page views. Past that they get "429 Too many requests" until the minute is over. People browsing
+never get near it; it stops one crawler or script from keeping the database busy for everyone.
+
+The site needs each visitor's own address for this. It reads it from the `X-Forwarded-For` header
+your proxy adds (the nginx and Caddy setups above do), and uses the connecting address when there's
+no proxy. When all it sees is a private address (a proxy that doesn't add the header, or Docker's
+port forwarding for IPv6 visitors), it can't tell visitors apart and doesn't limit them rather than
+limit everyone together. So behind a proxy, make sure it sends `X-Forwarded-For`.
+
+- **Behind Cloudflare:** set `behindCloudflare: true` in `config.yml`, so the site reads Cloudflare's
+  `CF-Connecting-IP`. Only when the site can't be reached around Cloudflare: otherwise anyone can
+  send that header with a made-up address. It's off by default for that reason.
+- **No proxy at all:** visitors can send their own `X-Forwarded-For`, which then counts as their
+  address, so the limit only stops scripts that don't try. You need a proxy for HTTPS anyway.
+
+It's per address: it won't stop traffic from many addresses at once. That's a job for your proxy
+or CDN (nginx `limit_req`, Cloudflare's rate limiting rules).
+
 ## 5. Indexes (big databases)
 
 ```sh
@@ -165,10 +187,17 @@ docker compose up -d --build
 ```
 
 There is no published image on purpose: your copy is meant to carry your own changes, so it's
-built from your checkout.
+built from your checkout. Rebuilding now and then also picks up security fixes in the base image
+(`docker compose build --pull`).
 
-`config.yml` is tracked in git. If you edited it and `git pull` complains, commit your changes first
-(`git commit -am "my settings"`) and pull again, or keep your settings in a fork.
+The container runs as an unprivileged user with a read-only filesystem and no Linux capabilities
+(see `docker-compose.yml`). The site only reads, so it doesn't notice; if you add something that
+writes files, mount a volume for it, or use `/tmp`.
+
+`config.yml` is tracked in git (not shipped as a `.example`: forks keep their settings in git, and
+Docker would mount a missing file as an empty directory). If you edited it and `git pull` complains,
+commit your changes first (`git commit -am "my settings"`) and pull again, or keep your settings in a
+fork.
 
 ## Without Docker
 

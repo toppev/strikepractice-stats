@@ -1,9 +1,17 @@
 node_modules
 .next
 .git
+.github
 
 .env
-.env.local
-*.db-wal
-*.db-shm
+.env.*
 docs/screenshots
+
+# Never bake a real database or dump into the image; only the demo database belongs there
+**/*.db
+!sample-data/demo.db
+**/*.db-wal
+**/*.db-shm
+**/*.db-journal
+**/*.sql
+**/*.sql.gz

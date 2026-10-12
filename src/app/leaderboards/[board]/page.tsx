@@ -8,11 +8,11 @@ import { ItemIconFor } from "@/components/minecraft";
 import { PlayerLink, RankNumber } from "@/components/player";
 import { Pagination, pageParam } from "@/components/pagination";
 
-type Props = { params: Promise<{ board: string }>; searchParams: Promise<{ page?: string }> };
+type Props = { params: Promise<{ board: string }>; searchParams: Promise<{ page?: string | string[] }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { board: id } = await params;
-  const board = (await getBoards()).find((b) => b.id === decodeURIComponent(id));
+  const board = (await getBoards()).find((b) => b.id === id);
   return { title: board ? `${board.label} leaderboard` : "Leaderboards" };
 }
 
@@ -23,9 +23,9 @@ const GROUPS: { id: Board["group"]; label: string }[] = [
 ];
 
 export default async function LeaderboardPage({ params, searchParams }: Props) {
-  const [{ board: rawId }, { page: rawPage }] = await Promise.all([params, searchParams]);
+  const [{ board: boardId }, { page: rawPage }] = await Promise.all([params, searchParams]);
   const boards = await getBoards();
-  const board = boards.find((b) => b.id === decodeURIComponent(rawId));
+  const board = boards.find((b) => b.id === boardId);
   if (!board) notFound();
 
   const pageSize = getConfig().leaderboards.pageSize;

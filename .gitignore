@@ -5,7 +5,13 @@ next-env.d.ts
 *.tsbuildinfo
 .env
 .env.local
-# SQLite sidecar files if you point the app at a copy of your database
+.DS_Store
+
+# Real databases and dumps never go in the repository; only the anonymized demo does
+*.db
+!sample-data/demo.db
 *.db-wal
 *.db-shm
-.DS_Store
+*.db-journal
+*.sql
+*.sql.gz
