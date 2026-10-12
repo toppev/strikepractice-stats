@@ -149,6 +149,10 @@ can show "Fight not found"; a refresh then finds it.
 
 ### Rate limit
 
+> **For real protection against bots and DDoS, put the site behind Cloudflare** (the free plan is
+> enough) or a similar CDN, and set `behindCloudflare: true`. The built-in limit below is only a
+> safety net against one misbehaving script; it does nothing against traffic from many addresses.
+
 Each visitor (IP address) may load `rateLimitPerMinute` pages a minute (config.yml, default 600),
 and the search box gets 4 times that on a count of its own, so looking up many players doesn't
 use up page views. Past that they get "429 Too many requests" until the minute is over. It's high on
@@ -167,8 +171,8 @@ limit everyone together. So behind a proxy, make sure it sends `X-Forwarded-For`
 - **No proxy at all:** visitors can send their own `X-Forwarded-For`, which then counts as their
   address, so the limit only stops scripts that don't try. You need a proxy for HTTPS anyway.
 
-It's per address: it won't stop traffic from many addresses at once. That's a job for your proxy
-or CDN (nginx `limit_req`, Cloudflare's rate limiting rules).
+It's per address: it won't stop traffic from many addresses at once. That's a job for a CDN in
+front (Cloudflare, see above) or your proxy (nginx `limit_req`).
 
 ## 5. Indexes (big databases)
 

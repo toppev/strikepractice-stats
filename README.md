@@ -58,6 +58,10 @@ docker compose exec stats node scripts/doctor.cjs   # checks the connection, tab
 Then make it yours in [`config.yml`](config.yml): server name, IP, accent color, logo, kit names.
 Changes show up on the next page load.
 
+Public site? Put it behind [Cloudflare](https://www.cloudflare.com) or a similar CDN for protection
+against bots and DDoS; the built-in [rate limit](docs/DEPLOYING.md#rate-limit) only stops a single
+misbehaving script.
+
 **Guides:** [Deploying](docs/DEPLOYING.md) (MySQL, SQLite, domains and HTTPS, updating) ·
 [Customizing](docs/CUSTOMIZING.md) (branding, code changes, prompts for AI agents)
 
