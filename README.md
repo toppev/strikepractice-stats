@@ -23,7 +23,7 @@ ended it.
   potions or soups left, health and hunger), both final inventories drawn like the game's inventory
   screen with item tooltips, effects, elo change, and the in-game replay command.
 - **Home:** the number one player, ladder top 10s, latest fights, server activity.
-- Search with suggestions, works with current names, old names and UUIDs. Works on phones.
+- Search with suggestions (any part of a name), works with current names, old names and UUIDs. Works on phones.
 
 | | |
 |---|---|

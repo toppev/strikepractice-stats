@@ -93,7 +93,7 @@ versions may lack some** (seen on a real server: `fight_players(fight)`, `fights
 | `fight_players (fight)` | players of a fight / a page of fights |
 | `fights (started)` | the join |
 | `fights (kit)` | kit filters, kit catalog |
-| `stats (username)` | search, name lookup |
+| `stats (username)` | name lookup (not the search box: it matches anywhere in a name, which no index helps) |
 
 ## The JSON columns
 

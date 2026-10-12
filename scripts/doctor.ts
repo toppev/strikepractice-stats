@@ -59,7 +59,7 @@ async function main() {
     ["fight_players", ["fight"], "showing who fought in each fight", "fp_fight_id_index"],
     ["fights", ["started"], "joining fights to their players", "f_started_index"],
     ["fights", ["kit"], "kit filters and kit names", "f_kit_index"],
-    ["stats", ["username"], "player search", "username_index"],
+    ["stats", ["username"], "opening a player by name", "username_index"],
   ];
   for (const [table, columns, why, name] of wanted) {
     const indexes = await database.indexes(table);

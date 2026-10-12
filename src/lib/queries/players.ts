@@ -57,16 +57,21 @@ export function findPlayer(nameOrUuid: string): Promise<PlayerRef | null> {
   });
 }
 
-/** Prefix search for the search box */
-export function searchPlayers(prefix: string, limit = 8): Promise<PlayerRef[]> {
-  const q = prefix.trim();
+/** Search box: names containing the text anywhere, those starting with it first */
+export function searchPlayers(text: string, limit = 8): Promise<PlayerRef[]> {
+  const q = text.trim();
   if (!/^[A-Za-z0-9_]{1,16}$/.test(q)) return Promise.resolve([]);
   return cached(`search:${q.toLowerCase()}`, async () => {
     const database = await db();
-    // LIKE is case-insensitive for ASCII in SQLite and with MySQL's default collations
+    // LIKE is case-insensitive for ASCII in SQLite and with MySQL's default collations.
+    // "_" is a wildcard in LIKE; an explicit ESCAPE is needed because SQLite has no default one.
+    // A leading % can't use the username index: a scan of `stats`, fine at a few 100k players
+    // with the cache and the search box's debounce.
+    const escaped = q.replace(/_/g, "!_");
     const rows = await database.all<{ uuid: string; username: string }>(
-      "SELECT uuid, username FROM stats WHERE username LIKE ? ORDER BY LENGTH(username), username LIMIT ?",
-      [`${q.replace(/_/g, "\\_")}%`, limit],
+      `SELECT uuid, username FROM stats WHERE username LIKE ? ESCAPE '!'
+       ORDER BY CASE WHEN username LIKE ? ESCAPE '!' THEN 0 ELSE 1 END, LENGTH(username), username LIMIT ?`,
+      [`%${escaped}%`, `${escaped}%`, limit],
     );
     return rows.map((r) => ({ uuid: r.uuid, name: r.username }));
   });

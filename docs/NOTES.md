@@ -116,3 +116,7 @@ up as a start time and redirects to the id; that lookup doesn't cache misses (`f
 cache.ts), so a refresh finds a fight saved after the first click. Documented the plugin settings
 in DEPLOYING.md. Checked: typecheck, tests, ids, start times, a trailing slash, a miss that
 becomes a hit, and junk ids, on the demo SQLite and on MariaDB 10.
+
+Then: the search box matches any part of a name ("ahmed" finds "iiAhmedYT"), names that start
+with the text first. Took the `ESCAPE` fix for `_` along (it was the same query). Checked on SQLite
+and MariaDB: substrings, case, `_`, empty and junk input.
