@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+
+.env
+.env.local
+*.db-wal
+*.db-shm
+docs/screenshots

@@ -1,0 +1,23 @@
+# Quick start: `docker compose up -d`, then open http://localhost:3000 (shows demo data).
+# To show your own server, set DATABASE_URL in a .env file next to this one (see .env.example)
+# and edit config.yml. Full guide: docs/DEPLOYING.md
+services:
+  stats:
+    build: .
+    container_name: strikepractice-stats
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Empty = the bundled demo database
+      DATABASE_URL: ${DATABASE_URL:-}
+    volumes:
+      # Settings and images; edit them without rebuilding (config.yml is re-read when it changes)
+      - ./config.yml:/app/config.yml:ro
+      - ./branding:/app/branding:ro
+      # SQLite instead of MySQL: mount the plugin's sqlite folder and set
+      # DATABASE_URL=sqlite:///data/database.db (see docs/DEPLOYING.md for permissions)
+      # - /path/to/server/plugins/StrikePractice/sqlite:/data
+    extra_hosts:
+      # Lets DATABASE_URL use host.docker.internal for a database running on this machine
+      - "host.docker.internal:host-gateway"

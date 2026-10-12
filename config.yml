@@ -1,0 +1,67 @@
+# Site settings. Every key is optional; delete what you don't need.
+# The site re-reads this file when it changes: edit, save, refresh the page. No rebuild needed.
+# Secrets (the database password) don't go here: put DATABASE_URL in .env, see .env.example.
+
+site:
+  name: StrikePractice
+  tagline: Practice PvP stats, fights and leaderboards.
+  # Shown on the home page with a copy button. Remove the line to hide it.
+  serverIp: play.example.net
+  # Public address of this site, used for link previews. Example: https://stats.example.net
+  # url: https://stats.example.net
+  # Logo next to the name in the header: a file in branding/ ("logo.png") or a full URL.
+  # Without one, a pixel sword in the accent color is drawn.
+  # logo: logo.png
+  # Extra links in the footer
+  links: []
+  #  - label: Discord
+  #    url: https://discord.gg/your-invite
+  #  - label: Store
+  #    url: https://store.example.net
+
+theme:
+  # Brand color: links, highlights, the number one spot, focus rings. Text on it adjusts by itself.
+  accent: "#ffb21e"
+  # Override any other color from src/app/globals.css (:root), for example a different background:
+  colors: {}
+  #  --bg: "#10131a"
+  #  --surface: "#181c26"
+
+images:
+  # Where player heads and skins come from. {uuid}, {name} and {size} are filled in.
+  # Offline-mode (cracked) servers: UUIDs don't match skins, use {name} instead of {uuid}.
+  head: https://mc-heads.net/avatar/{uuid}/{size}
+  body: https://mc-heads.net/body/{uuid}/{size}
+  # Rendered item icons ({id} = modern item id like diamond_sword) and raw game textures
+  # ({path} = like item/potion_overlay). Point these at your own copy to self-host them.
+  item: https://mc.nerothe.com/img/1.21.11/minecraft_{id}.png
+  texture: https://assets.mcasset.cloud/1.21.8/assets/minecraft/textures/{path}.png
+
+# Per-kit settings. The key is the kit's name in the plugin (as in /battlekit, and the elo_<kit> column).
+# Names and icons are found automatically from saved fights; set them here to override.
+kits: {}
+#  nodebuffelo:
+#    name: NoDebuff
+#    icon: splash_potion:strong_healing   # item id, or splash_potion:<potion type>
+#  oldkit:
+#    hidden: true                         # leave it out of leaderboards, filters and profiles
+
+# Arena banners on fight pages. Easiest: put an image named after the arena in branding/arenas/
+# (river.webp, river.jpg, ...). The key is the arena name without color codes, lowercased.
+arenas: {}
+#  river:
+#    name: The River
+#    image: arenas/river-night.webp
+
+leaderboards:
+  pageSize: 50
+  # Boards for event wins (LMS, brackets, sumo, juggernaut, party vs party); each shows up only
+  # once someone has won that event
+  events: true
+
+# The plugin's starting elo (elo.starting-elo in its config). Players still on it haven't played that
+# kit ranked, so they are left off its ladder.
+startingElo: 1000
+
+# How long database results are reused, in seconds. Raise it for big databases or busy sites.
+cacheSeconds: 60
