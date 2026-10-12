@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { getConfig } from "@/lib/config";
 import { brandingUrl } from "@/lib/images";
 import { isDemo } from "@/lib/db";

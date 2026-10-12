@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 
 /** Previous / next with the page position; `href(page)` builds each link */
 export function Pagination({ page, pages, href }: { page: number; pages: number; href: (page: number) => string }) {

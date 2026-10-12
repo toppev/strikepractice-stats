@@ -66,6 +66,9 @@ Point at a real database with `DATABASE_URL=mysql://user:pass@host:3306/db` or
 - **No Minecraft assets in the repo** (textures, the game's fonts). Load them by URL (config `images.*`).
 - **The container is read-only** (compose `read_only: true`, app files owned by root, no capabilities).
   Code that writes files must use `/tmp` or a volume you add to `docker-compose.yml`; don't drop the hardening.
+- **Links: `import { Link } from "@/components/link"`, never `next/link`.** It turns prefetching off:
+  pages are dynamic, and prefetched links would each render a page and count against the visitor's
+  rate limit (a test fails on a `next/link` import).
 - **URL input is untrusted.** Route `params` arrive already decoded (don't `decodeURIComponent` them
   again); a repeated query parameter arrives as an array, so read them with `oneParam()`/`pageParam()`.
 - **Next.js 16:** `params`/`searchParams` are Promises; pages are dynamic (the root layout sets

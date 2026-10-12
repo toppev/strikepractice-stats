@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { recentFights } from "@/lib/queries/fights";
 import { getKits } from "@/lib/queries/kits";
 import { FightList, FightRow, KitLabel } from "@/components/fight-row";

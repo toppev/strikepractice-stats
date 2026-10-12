@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { getConfig } from "@/lib/config";
 import { getBoardPage, getBoards } from "@/lib/queries/leaderboards";
 import { getKits } from "@/lib/queries/kits";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { PlayerHead } from "./player";
 import { ItemIconFor } from "./minecraft";
 import type { FightSummary, FightPlayer } from "@/lib/queries/fights";

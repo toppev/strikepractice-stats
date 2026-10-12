@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { headUrl } from "@/lib/images";
 
 export function playerHref(player: { name: string; uuid?: string }): string {

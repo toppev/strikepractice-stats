@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { notFound, redirect } from "next/navigation";
 import { getConfig } from "@/lib/config";
 import { bodyUrl } from "@/lib/images";

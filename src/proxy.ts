@@ -7,9 +7,8 @@ import { bucket, clientIp, hit, isPrivate } from "@/lib/rate-limit";
  * `rateLimitPerMinute` requests per minute (config.yml), so one aggressive crawler or script can't
  * keep the database busy for everyone. Search suggestions have their own count (see bucket()).
  * Static files, branding images and the health check don't count.
- * One page view is one request because Next.js doesn't prefetch dynamic pages (all of them are)
- * unless they have a loading.tsx. Adding one would make every visible <Link> a request that counts
- * here: give those links prefetch={false}, or raise the limit.
+ * One page view is one request because links don't prefetch (src/components/link.tsx). With
+ * next/link's default, every link scrolling into view would be a request counted here.
  */
 export function proxy(request: NextRequest) {
   const { limit, cloudflare } = settings();

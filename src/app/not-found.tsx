@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { SearchBox } from "@/components/search-box";
 
 export default function NotFound() {
