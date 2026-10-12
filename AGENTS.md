@@ -19,7 +19,7 @@ rebrand and extend. Keep it small, plain and documented. Read these before chang
 
 | Read | When |
 |---|---|
-| [docs/NOTES.md](docs/NOTES.md) | Always first: context, scope, status, decisions, ideas. **Update its status and session log when you finish.** |
+| [docs/NOTES.md](docs/NOTES.md) | Always first: context, scope, status, ideas, and what may go in this **public** repo. Update Status/Ideas when they change. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Before adding pages, queries, config options |
 | [docs/STRIKEPRACTICE-DATA.md](docs/STRIKEPRACTICE-DATA.md) | Before writing any SQL or touching parsers. The plugin's schema has traps. |
 | [docs/DESIGN.md](docs/DESIGN.md) | Before any UI work: tokens, type, layout rules |
@@ -42,6 +42,10 @@ Point at a real database with `DATABASE_URL=mysql://user:pass@host:3306/db` or
 
 ## Rules
 
+- **This repository is public**, and so is every commit message and PR. No session or decision
+  logs in the repo: explain what changed and why in the commit message. Check the diff and the
+  message before committing: no real players' names/UUIDs/data, no hosts, domains, paths or
+  credentials of a real deployment, no private repos or unreleased plans (details in docs/NOTES.md).
 - **Read-only.** Never write to, migrate, or create indexes in the plugin's database from the app.
   The plugin owns the schema. (The doctor *prints* `CREATE INDEX` for humans to run.)
 - **One SQL for both databases.** Use `?` placeholders and the `db().dialect` helpers. Test against
@@ -80,7 +84,7 @@ Point at a real database with `DATABASE_URL=mysql://user:pass@host:3306/db` or
    Good pages to check: `/`, `/leaderboards/nodebuffelo`, `/player/toppev`, `/fight/10198` (26.1
    items), `/fight/8985` (1.8 NoDebuff potions).
 3. If you changed SQL, also run against MySQL/MariaDB and `npm run doctor`.
-4. Say in the commit or PR what you checked.
+4. Say in the commit or PR what you changed, why, and what you checked (it's public: see the first rule).
 
 ## Map
 
