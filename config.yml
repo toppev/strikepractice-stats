@@ -66,11 +66,11 @@ startingElo: 1000
 # How long database results are reused, in seconds. Raise it for big databases or busy sites.
 cacheSeconds: 60
 
-# Pages one visitor (IP address) may load per minute; search suggestions have their own count of 4x
-# this. Past that they get "Too many requests" until the minute is over. Deliberately high: many
-# players can share one address (school networks, mobile carriers), and it only needs to stop one
-# script from keeping the database busy. Floods from many addresses are a job for a CDN or proxy.
-# 0 turns it off. Behind more than one proxy, see "Rate limit" in docs/DEPLOYING.md.
+# Pages and search suggestions one visitor (IP address) may load per minute. Past that they get
+# "Too many requests" until the minute is over. Deliberately high: many players can share one
+# address (school networks, mobile carriers), and it only needs to stop one script from keeping the
+# database busy. Floods from many addresses are a job for a CDN or proxy. 0 turns it off. Behind
+# more than one proxy, see "Rate limit" in docs/DEPLOYING.md.
 rateLimitPerMinute: 600
 
 # Only if visitors reach the site through Cloudflare (and nothing else can reach it): read their

@@ -22,17 +22,6 @@ export function hit(ip: string, limit: number, now = Date.now()): number {
   return window.count <= limit ? 0 : Math.ceil((window.start + WINDOW_MS - now) / 1000);
 }
 
-// The search box asks after each pause in typing, so looking up a few players is dozens of requests
-const SEARCH_FACTOR = 4;
-
-/**
- * Which count a request goes to. Searches get their own, bigger one, so looking up many players
- * doesn't use up the visitor's page views (and can't be used to get around their limit either).
- */
-export function bucket(pathname: string, ip: string, perMinute: number): { key: string; limit: number } {
-  return pathname === "/api/search" ? { key: `search ${ip}`, limit: perMinute * SEARCH_FACTOR } : { key: ip, limit: perMinute };
-}
-
 /**
  * The visitor's address, or undefined when the request doesn't tell. It's the last X-Forwarded-For
  * entry: every proxy appends the address it saw, anything before it may be made up. Without a

@@ -153,10 +153,9 @@ can show "Fight not found"; a refresh then finds it.
 > enough) or a similar CDN, and set `behindCloudflare: true`. The built-in limit below is only a
 > safety net against one misbehaving script; it does nothing against traffic from many addresses.
 
-Each visitor (IP address) may load `rateLimitPerMinute` pages a minute (config.yml, default 600),
-and the search box gets 4 times that on a count of its own, so looking up many players doesn't
-use up page views. Past that they get "429 Too many requests" until the minute is over. It's high on
-purpose: many players can share one address (school networks, mobile carriers), and all it has to
+Each visitor (IP address) may load `rateLimitPerMinute` pages and search suggestions a minute
+(config.yml, default 600). Past that they get "429 Too many requests" until the minute is over.
+It's high on purpose: many players can share one address (school networks, mobile carriers), and all it has to
 do is stop one crawler or script from keeping the database busy for everyone.
 
 The site needs each visitor's own address for this. It reads it from the `X-Forwarded-For` header

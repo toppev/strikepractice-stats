@@ -69,7 +69,7 @@ const schema = z.object({
   startingElo: z.number().int().default(1000),
   /** How long query results are reused, in seconds. Raise it for big databases. */
   cacheSeconds: z.number().int().min(0).default(60),
-  /** Pages one visitor (IP address) may load per minute before getting a 429 (search: 4x, own count). 0 = no limit. */
+  /** Page and search requests one visitor (IP address) may make per minute before getting a 429. 0 = no limit. */
   rateLimitPerMinute: z.number().int().min(0).default(600),
   /** Take visitors' addresses from Cloudflare's CF-Connecting-IP. Off by default: anyone can send that header. */
   behindCloudflare: z.boolean().default(false),

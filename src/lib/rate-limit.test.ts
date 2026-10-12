@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bucket, clientIp, hit, isPrivate } from "./rate-limit";
+import { clientIp, hit, isPrivate } from "./rate-limit";
 
 test("allows the limit per minute, then says how long to wait", () => {
   const start = 1_000_000;
@@ -31,15 +31,4 @@ test("private and loopback addresses are told apart from public ones", () => {
   for (const ip of ["198.51.100.7", "172.32.0.1", "11.0.0.1", "2001:db8::5", "::ffff:198.51.100.7"]) {
     assert.equal(isPrivate(ip), false, ip);
   }
-});
-
-test("searches have their own, bigger count", () => {
-  const page = bucket("/player/someone", "198.51.100.3", 2);
-  const search = bucket("/api/search", "198.51.100.3", 2);
-  assert.equal(search.limit, 8);
-  const start = 2_000_000;
-  for (let i = 0; i < 8; i++) assert.equal(hit(search.key, search.limit, start), 0);
-  assert.notEqual(hit(search.key, search.limit, start), 0);
-  // Typing in the search box didn't use up page views
-  assert.equal(hit(page.key, page.limit, start), 0);
 });
