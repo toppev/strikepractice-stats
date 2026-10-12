@@ -129,6 +129,24 @@ server {
 When the site is only reached through the proxy, publish the port on localhost only:
 `ports: ["127.0.0.1:3000:3000"]`. Set `site.url` in `config.yml` to the public address.
 
+### Fight links from the game and Discord
+
+The plugin can link each fight to the site: the chat message after a fight (its `config.yml`) and
+the fight webhook (`discord-webhooks.json`). Both give the fight's start time, which
+`/fight/<start time>` accepts and redirects to the fight's page:
+
+```yaml
+match-link-after-fight: true
+match-link: '&9Match link: https://stats.example.net/fight/<started>'
+```
+
+```json
+"url": "https://stats.example.net/fight/<fight_id>"
+```
+
+The plugin sends the link a moment before it saves the fight, so a click within the first seconds
+can show "Fight not found"; a refresh then finds it.
+
 ## 5. Indexes (big databases)
 
 ```sh

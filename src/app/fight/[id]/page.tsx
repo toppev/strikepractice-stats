@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getConfig } from "@/lib/config";
-import { getFight, type FightDetail } from "@/lib/queries/fights";
+import { getFight, getFightIdByStart, type FightDetail } from "@/lib/queries/fights";
 import { getKits } from "@/lib/queries/kits";
 import { arenaImage, bodyUrl } from "@/lib/images";
 import { duration, formatDateTime, signed, timeAgo } from "@/lib/format";
@@ -14,9 +14,14 @@ import { CopyValue } from "@/components/copy-button";
 
 type Props = { params: Promise<{ id: string }> };
 
-async function load(id: string): Promise<FightDetail | null> {
+function fightNumber(id: string): number | null {
   const n = Number(id);
-  return Number.isInteger(n) && n > 0 ? getFight(n) : null;
+  return Number.isSafeInteger(n) && n > 0 ? n : null;
+}
+
+async function load(id: string): Promise<FightDetail | null> {
+  const n = fightNumber(id);
+  return n ? getFight(n) : null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,8 +42,15 @@ const MODES: Record<string, string> = {
 type Player = FightDetail["players"][number];
 
 export default async function FightPage({ params }: Props) {
-  const fight = await load((await params).id);
-  if (!fight) notFound();
+  const { id } = await params;
+  const fight = await load(id);
+  if (!fight) {
+    // Links from the plugin carry the fight's start time instead of its id
+    const n = fightNumber(id);
+    const real = n ? await getFightIdByStart(n) : null;
+    if (real) redirect(`/fight/${real}`);
+    notFound();
+  }
   const kits = await getKits();
   const config = getConfig();
 

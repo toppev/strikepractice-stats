@@ -34,7 +34,7 @@ browser ── GET /player/Steve ──▶ Next.js server component (src/app/pla
 | `src/app/page.tsx` | Home: hero, number one, ladder top 10, latest fights, activity |
 | `src/app/leaderboards/[board]/` | Leaderboards. Board ids: `elo`, `wins`, `kills`, event ids, or a kit name |
 | `src/app/player/[name]/` | Profile. Accepts name, old name or UUID; redirects to the current name |
-| `src/app/fight/[id]/` | One fight: tale of the tape, inventories, replay command |
+| `src/app/fight/[id]/` | One fight: tale of the tape, inventories, replay command. Also accepts the start time (the plugin's links) and redirects to the id |
 | `src/app/fights/` | All fights, filterable |
 | `src/app/api/search`, `api/health` | Search suggestions (JSON); health check for Docker |
 | `src/app/branding/[...path]` | Serves files from `branding/` (mounted in Docker, so no rebuild for a new logo) |

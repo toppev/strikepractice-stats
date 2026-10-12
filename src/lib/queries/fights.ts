@@ -1,5 +1,5 @@
 import { db, type SqlParam } from "../db";
-import { cached } from "../cache";
+import { cached, forget } from "../cache";
 import { parseFightData, parsePlayerData, type FightData, type PlayerData } from "../sp/fight-data";
 import { isRanked, placeholders, RANKED_MODES, toNumber } from "./common";
 
@@ -185,4 +185,19 @@ export function getFight(id: number): Promise<FightDetail | null> {
         .sort((a, b) => Number(b.winner) - Number(a.winner)),
     };
   }, 10);
+}
+
+/**
+ * The id of the fight that started at `started` (ms). The plugin links fights by start time:
+ * `<started>` in its match-link message, `<fight_id>` in its Discord webhooks. It sends those a
+ * moment before it saves the fight, so a miss isn't remembered: the next refresh finds it.
+ */
+export async function getFightIdByStart(started: number): Promise<number | null> {
+  const key = `fight-start:${started}`;
+  const id = await cached(key, async () => {
+    const row = await (await db()).get<{ id: number }>("SELECT id FROM fights WHERE started = ?", [started]);
+    return row ? toNumber(row.id) : null;
+  });
+  if (id === null) forget(key);
+  return id;
 }

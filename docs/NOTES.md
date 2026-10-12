@@ -46,6 +46,8 @@ As of 2026-10-12 (session 1):
   effects, § colors. Unit tests with real samples.
 - ✅ MySQL/MariaDB and SQLite. Demo database (anonymized, 450 fights) used when `DATABASE_URL` is unset.
 - ✅ Docker image + compose, `npm run doctor` (also in the image), sample data generator.
+- ✅ The plugin's own fight links (match-link `<started>`, webhook `<fight_id>`: both the start
+  time) open the fight: `/fight/<start time>` redirects to `/fight/<id>`.
 - ✅ Docs: README, AGENTS.md, architecture, data model, design, customizing, deploying.
 - ✅ Tested against a copy of the public test server's MariaDB (10k fights) and the demo SQLite;
   desktop and 390 px phone screenshots reviewed.
@@ -106,3 +108,11 @@ Built everything listed under Status, from scratch. Mapped the formats from the 
 hits are serialized as `kits`; `fight_players.fight` is the start time; older databases can lack
 three indexes. Next: pick ideas from the list (JSON API and share images are the obvious next
 ones).
+
+### 2026-10-12, session 3
+The plugin links fights by start time, not id (its chat link after a fight and its Discord
+webhook), and sends the link before it saves the fight. `/fight/[id]` now also looks the number
+up as a start time and redirects to the id; that lookup doesn't cache misses (`forget()` in
+cache.ts), so a refresh finds a fight saved after the first click. Documented the plugin settings
+in DEPLOYING.md. Checked: typecheck, tests, ids, start times, a trailing slash, a miss that
+becomes a hit, and junk ids, on the demo SQLite and on MariaDB 10.

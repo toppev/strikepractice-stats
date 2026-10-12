@@ -27,6 +27,11 @@ export function cached<T>(key: string, load: () => Promise<T>, weight = 1): Prom
   return value;
 }
 
+/** Drops one remembered result, for a miss that won't stay one (see getFightIdByStart) */
+export function forget(key: string) {
+  store.delete(key);
+}
+
 function prune(now: number) {
   for (const [key, entry] of store) {
     if (entry.expires <= now) store.delete(key);
